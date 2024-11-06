@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Printer Management System</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center align-items-center vh-100">
+            <div class="col-md-4">
+                <h3 class="text-center mb-4">Login</h3>
+
+                <!-- Login Form -->
+                <form action="login.php" method="POST">
+                    <!-- Username Field -->
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input type="text" class="form-control" id="username" name="username" placeholder="Enter your username" required>
+                    </div>
+
+                    <!-- Password Field -->
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required>
+                    </div>
+
+                    <!-- Login Button -->
+                    <button type="submit" class="btn btn-primary btn-block mt-3">Login</button>
+                </form>
+
+                <!-- Link to Registration Page -->
+                <p class="text-center mt-3">
+                    Don’t have an account? <a href="register.php">Register here</a>
+                </p>
+                
+               
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,151 @@
+-- Create database
+CREATE DATABASE IF NOT EXISTS printer_management_db;
+USE printer_management_db;
+
+-- Table structure for table `drums`
+CREATE TABLE `drums` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `drum_type` varchar(100) NOT NULL,
+  `stock` int(11) NOT NULL DEFAULT 0,
+  `low_stock_threshold` int(11) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Data for table `drums`
+INSERT INTO `drums` (`id`, `drum_type`, `stock`, `low_stock_threshold`) VALUES
+(1, 'DR-420', 1, 1),
+(5, 'DR-820 ', 1, 1),
+(6, 'DR-331', 1, 1),
+(7, 'DR-730', 0, 1),
+(8, 'DR-431CL ', 0, 1),
+(9, 'DR-630', 0, 1),
+(10, 'NO DRUM', 0, -1);
+
+-- Table structure for table `locations`
+CREATE TABLE `locations` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `location_name` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Data for table `locations`
+INSERT INTO `locations` (`id`, `location_name`) VALUES
+(1, '1st Floor Office'),
+(2, '2nd Floor Office'),
+(3, 'Warehouse 1'),
+(4, 'Warehouse 2');
+
+-- Table structure for table `printers`
+CREATE TABLE `printers` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `model` varchar(100) NOT NULL,
+  `toner_id` int(11) DEFAULT NULL,
+  `drum_id` int(11) DEFAULT NULL,
+  `location_id` int(11) DEFAULT NULL,
+  `status` enum('active','inactive','maintenance') DEFAULT 'active',
+  `user_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `toner_id` (`toner_id`),
+  KEY `drum_id` (`drum_id`),
+  KEY `location_id` (`location_id`),
+  KEY `fk_user_id` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Data for table `printers`
+INSERT INTO `printers` (`id`, `model`, `toner_id`, `drum_id`, `location_id`, `status`, `user_id`) VALUES
+(1, 'Brother MFC-L8610CDW', 4, 8, 1, 'active', 2),
+(2, 'Brother MFC-L5850DW', 5, 5, 1, 'active', NULL),
+(3, 'HP Color LaserJet CP5225', 6, 10, 2, 'active', NULL),
+(4, 'Brother MFC-L2710DW', 7, 7, 2, 'active', NULL),
+(6, 'Brother DCP-L2550DW', 7, 7, 3, 'active', NULL),
+(7, 'Brother MFC-L5705DW', 5, 5, 3, 'active', NULL),
+(9, 'HP Color LaserJet CP5225', 6, 10, 4, 'active', NULL),
+(10, 'HP LaserJet Pro M402N', 8, 10, 4, 'active', NULL),
+(12, 'Brother HL-L2350DW', 7, 7, 4, 'active', NULL),
+(13, 'Brother HL-2300D', 11, 9, 4, 'active', NULL);
+
+-- Table structure for table `support_requests`
+CREATE TABLE `support_requests` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `request_type` varchar(100) DEFAULT NULL,
+  `description` text DEFAULT NULL,
+  `status` enum('Not Resolved','Resolved') DEFAULT 'Not Resolved',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Data for table `support_requests`
+INSERT INTO `support_requests` (`id`, `user_id`, `request_type`, `description`, `status`, `created_at`) VALUES
+(10, 5, 'Toner Replacement', 'ASAP', 'Not Resolved', '2024-11-05 14:06:22');
+
+-- Table structure for table `toners`
+CREATE TABLE `toners` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `toner_type` varchar(100) NOT NULL,
+  `stock` int(11) DEFAULT 0,
+  `low_stock_threshold` int(11) DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Data for table `toners`
+INSERT INTO `toners` (`id`, `toner_type`, `stock`, `low_stock_threshold`) VALUES
+(3, 'TN-433-Color', 1, 1),
+(4, 'TN-433-Black', 1, 1),
+(5, 'TN-850', 0, 1),
+(6, 'CE740A/ CE741A/ CE742A ', 0, 1),
+(7, 'TN-760', 0, 1),
+(8, 'K Black 26A CF226A', 0, 1),
+(9, 'TN-820', 0, 1),
+(10, 'TN-730', 0, 1),
+(11, 'TN-660', 3, 1),
+(12, 'TN-336-Y', 2, 1),
+(13, 'TN-336-M', 2, 1),
+(14, 'TN-450', 2, 1),
+(15, 'TN-227-Black', 2, 1),
+(16, 'TN-227-Color', 3, 1),
+(17, 'TN-225-Color', 4, 1),
+(18, 'TN-324-M', 1, 1),
+(19, 'TN-324-C', 1, 1),
+(20, 'TN-324-Y', 1, 1);
+
+-- Table structure for table `users`
+CREATE TABLE `users` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `username` varchar(50) NOT NULL,
+  `password` varchar(55) NOT NULL,
+  `role` enum('user','admin') DEFAULT 'user',
+  `printer_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `username` (`username`),
+  KEY `printer_id` (`printer_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Data for table `users`
+INSERT INTO `users` (`id`, `username`, `password`, `role`, `printer_id`) VALUES
+(1, 'admin', 'admin', 'admin', NULL),
+(2, 'testuser', 'testuser', 'user', NULL),
+(3, 'user1', '', 'user', 1),
+(4, 'user2', 'user2', 'user', 2),
+(5, 'user3', 'user3', 'user', 3),
+(6, 'user4', 'user4', 'user', 4),
+(7, 'user5', 'user5', 'user', 12),
+(8, 'user6', 'user6', 'user', 6),
+(9, 'user7', 'user7', 'user', 7),
+(10, 'user8', 'user8', 'user', 2),
+(11, 'user9', 'user9', 'user', 3),
+(12, 'user10', 'user10', 'user', 10),
+(13, 'user11', 'user11', 'user', 7),
+(14, 'user12', 'user12', 'user', 12),
+(15, 'user13', 'user13', 'user', 13),
+(16, 'user14', 'user14', 'user', 7);
+
+-- Constraints and foreign keys
+ALTER TABLE `printers`
+  ADD CONSTRAINT `fk_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
+  ADD CONSTRAINT `printers_ibfk_1` FOREIGN KEY (`toner_id`) REFERENCES `toners` (`id`) ON DELETE SET NULL,
+  ADD CONSTRAINT `printers_ibfk_2` FOREIGN KEY (`drum_id`) REFERENCES `drums` (`id`) ON DELETE SET NULL,
+  ADD CONSTRAINT `printers_ibfk_3` FOREIGN KEY (`location_id`) REFERENCES `locations` (`id`) ON DELETE SET NULL;
+
+ALTER TABLE `support_requests`
